@@ -29,6 +29,7 @@
     <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.Presentation/Nova.Modules.Conversation.Presentation.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Memory/" />
+  <Folder Name="/src/Modules/Search/" />
   <Folder Name="/tests/" />
   <Project Path="../Nova.Shared/Nova.Contracts/Nova.Contracts.csproj" />
 </Solution>
