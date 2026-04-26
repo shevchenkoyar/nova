@@ -1,0 +1,32 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/API/">
+    <Project Path="src/API/Nova.WebAPI/Nova.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/src/Aspire/">
+    <Project Path="src/Aspire/Nova.Aspire.AppHost\Nova.Aspire.AppHost.csproj" />
+    <Project Path="src/Aspire/Nova.Aspire.ServiceDefaults\Nova.Aspire.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/Common/">
+    <Project Path="src/Common/Nova.Common.Application/Nova.Common.Application.csproj" />
+    <Project Path="src/Common/Nova.Common.Domain/Nova.Common.Domain.csproj" />
+    <Project Path="src/Common/Nova.Common.Infrastructure/Nova.Common.Infrastructure.csproj" />
+    <Project Path="src/Common/Nova.Common.Presentation/Nova.Common.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Conversation/">
+    <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.Application/Nova.Modules.Conversation.Application.csproj" />
+    <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.Domain/Nova.Modules.Conversation.Domain.csproj" />
+    <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.Infrastructure/Nova.Modules.Conversation.Infrastructure.csproj" />
+    <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.IntegrationEvents/Nova.Modules.Conversation.IntegrationEvents.csproj" />
+    <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.Presentation/Nova.Modules.Conversation.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Memory/" />
+  <Folder Name="/tests/" />
+  <Project Path="../Nova.Shared/Nova.Contracts/Nova.Contracts.csproj" />
+</Solution>

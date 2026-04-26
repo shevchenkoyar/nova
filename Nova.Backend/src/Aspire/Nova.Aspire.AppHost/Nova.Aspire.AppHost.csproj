@@ -1,0 +1,12 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.2.4">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <UserSecretsId>ea71b077-5e91-4bfb-b410-de786ac5f993</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\API\Nova.WebAPI\Nova.WebAPI.csproj" />
+    </ItemGroup>
+
+</Project>
