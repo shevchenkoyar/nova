@@ -12,8 +12,7 @@ public static class InfrastructureConfiguration
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
-        IConfiguration configuration,
-        string databaseConnectionString)
+        IConfiguration configuration)
     {
         services.Configure<RedisIdempotencyOptions>(configuration.GetSection("Idempotency"));
         

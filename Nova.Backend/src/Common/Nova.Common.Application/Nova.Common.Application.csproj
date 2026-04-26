@@ -3,5 +3,12 @@
     <ItemGroup>
       <ProjectReference Include="..\Nova.Common.Domain\Nova.Common.Domain.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+      <PackageReference Include="Scrutor" />
+      <PackageReference Include="Serilog" />
+    </ItemGroup>
 
 </Project>

@@ -23,6 +23,11 @@
     <!-- Infrastructure -->
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.7" />
     <PackageVersion Include="StackExchange.Redis" Version="2.12.14" />
+    <!-- Application -->
+    <PackageVersion Include="Scrutor" Version="7.0.0" />
+    <PackageVersion Include="Serilog" Version="4.3.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <!-- Presentation -->
     <PackageVersion Include="Scalar.AspNetCore.Microsoft" Version="2.14.4" />
     <!-- Migrator -->
