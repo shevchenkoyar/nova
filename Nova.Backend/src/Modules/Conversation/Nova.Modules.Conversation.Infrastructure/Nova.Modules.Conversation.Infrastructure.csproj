@@ -1,3 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Nova.Common.Infrastructure\Nova.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\Nova.Modules.Conversation.Presentation\Nova.Modules.Conversation.Presentation.csproj" />
+  </ItemGroup>
 </Project>

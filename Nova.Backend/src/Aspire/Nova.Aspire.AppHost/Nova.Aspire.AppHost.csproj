@@ -7,6 +7,14 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\API\Nova.WebAPI\Nova.WebAPI.csproj" />
+      <ProjectReference Include="..\..\Nova.Migrator\Nova.Migrator.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+      <PackageReference Include="Aspire.Hosting.RabbitMQ" />
+      <PackageReference Include="Aspire.Hosting.Redis" />
+      <PackageReference Include="Scalar.Aspire" />
     </ItemGroup>
 
 </Project>

@@ -1,3 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Nova.Common.Application\Nova.Common.Application.csproj" />
+    <ProjectReference Include="..\Nova.Modules.Conversation.Domain\Nova.Modules.Conversation.Domain.csproj" />
+    <ProjectReference Include="..\Nova.Modules.Conversation.IntegrationEvents\Nova.Modules.Conversation.IntegrationEvents.csproj" />
+  </ItemGroup>
 </Project>
