@@ -20,27 +20,55 @@ public sealed class AssistantService(
 
         var tools = toolRegistry.GetDescriptors();
 
-        var plan = await planner.BuildPlanAsync(
+        var plannerResult = await planner.BuildPlanAsync(
             request.Text,
             tools,
             context,
             ct);
 
+        if (!plannerResult.IsSuccess)
+        {
+            return new AssistantMessageResponse(
+                Message: "Я не смогла построить план действия.",
+                Data: new
+                {
+                    plannerResult.Error
+                });
+        }
+
+        var plan = plannerResult.Plan;
+
         if (plan is not null && plan.Steps.Count > 0)
         {
-            var toolResult = await toolExecutor.ExecutePlanAsync(
+            var executionResult = await toolExecutor.ExecutePlanAsync(
                 plan,
                 request.UserId,
                 context,
                 ct);
 
+            if (!executionResult.IsSuccess)
+            {
+                return new AssistantMessageResponse(
+                    Message: "Я не смогла выполнить действие.",
+                    Data: new
+                    {
+                        executionResult.Error,
+                        executionResult.Steps
+                    });
+            }
+
             return new AssistantMessageResponse(
-                toolResult.Message ?? "Готово.",
-                toolResult.Data);
+                Message: executionResult.Message ?? "Готово.",
+                Data: new
+                {
+                    executionResult.Data,
+                    executionResult.Steps
+                });
         }
 
         return new AssistantMessageResponse(
-            BuildDirectAnswer(request.Text, context));
+            Message: BuildDirectAnswer(request.Text, context),
+            Data: null);
     }
 
     private static string BuildDirectAnswer(
@@ -52,6 +80,13 @@ public sealed class AssistantService(
             return context.ResponseStyle == ResponseStyle.Short
                 ? "DLMS — протокол обмена данными со счётчиками."
                 : "DLMS — это протокол обмена данными со счётчиками. Он используется для чтения показаний, профилей, событий и управления устройствами.";
+        }
+
+        if (text.Contains("привет", StringComparison.OrdinalIgnoreCase))
+        {
+            return context.ResponseStyle == ResponseStyle.Short
+                ? "Привет."
+                : "Привет! Я Nova. Пока умею работать с памятью, поиском и простыми ответами.";
         }
 
         return context.ResponseStyle == ResponseStyle.Short

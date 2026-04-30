@@ -11,7 +11,7 @@ public sealed class OpenAiPlanner(ChatClient client) : IAssistantPlanner
         WriteIndented = true
     };
 
-    public async Task<AssistantPlan?> BuildPlanAsync(
+    public async Task<PlannerResult> BuildPlanAsync(
         string text,
         IReadOnlyCollection<ToolDescriptor> tools,
         AssistantContext context,
@@ -97,27 +97,27 @@ Rules:
 """;
     }
 
-    private static AssistantPlan? ParsePlan(string content)
+    private static PlannerResult ParsePlan(string content)
     {
         try
         {
             content = content.Trim();
 
             if (content.Equals("null", StringComparison.OrdinalIgnoreCase))
-                return null;
+                return PlannerResult.Success(null);
 
             var start = content.IndexOf('{');
             var end = content.LastIndexOf('}');
 
             if (start < 0 || end < 0 || end <= start)
-                return null;
+                return PlannerResult.Failure($"Planner returned invalid JSON: {content}");
 
             var jsonText = content[start..(end + 1)];
 
             using var json = JsonDocument.Parse(jsonText);
 
             if (!json.RootElement.TryGetProperty("steps", out var stepsElement))
-                return null;
+                return PlannerResult.Failure("Planner JSON does not contain 'steps'.");
 
             var steps = stepsElement
                 .EnumerateArray()
@@ -135,13 +135,12 @@ Rules:
                 })
                 .ToList();
 
-            return steps.Count == 0
-                ? null
-                : new AssistantPlan { Steps = steps };
+            return PlannerResult.Success(
+                steps.Count == 0 ? null : new AssistantPlan { Steps = steps });
         }
-        catch
+        catch (Exception ex)
         {
-            return null;
+            return PlannerResult.Failure(ex.Message);
         }
     }
 }

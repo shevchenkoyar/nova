@@ -5,43 +5,96 @@ namespace Nova.Common.Application.Tools;
 
 public sealed class ToolExecutor(INovaToolRegistry registry)
 {
-    public async Task<ToolResult> ExecutePlanAsync(
+    public async Task<ToolExecutionResult> ExecutePlanAsync(
         AssistantPlan plan,
         Guid userId,
         AssistantContext assistantContext,
         CancellationToken ct)
     {
-        ToolResult? last = null;
+        var stepResults = new List<ToolExecutionStepResult>();
 
         foreach (var step in plan.Steps)
         {
             var tool = registry.Find(step.ToolName);
 
             if (tool is null)
-                return ToolResult.Failure($"Tool '{step.ToolName}' not found.");
-
-            if (tool.SafetyLevel is ToolSafetyLevel.Forbidden)
-                return ToolResult.Failure($"Tool '{tool.Name}' is forbidden.");
-
-            if (tool.SafetyLevel is ToolSafetyLevel.Dangerous or ToolSafetyLevel.ConfirmationRequired)
-                return ToolResult.Failure($"Tool '{tool.Name}' requires confirmation.");
+            {
+                return ToolExecutionResult.Failure(
+                    $"Tool '{step.ToolName}' not found.",
+                    stepResults);
+            }
 
             var arguments = JsonSerializer.SerializeToElement(step.Arguments);
 
-            if (!ToolArgumentValidator.Validate(tool.ParametersSchema, arguments, out var error))
-                return ToolResult.Failure($"Invalid arguments for '{tool.Name}': {error}");
+            if (tool.SafetyLevel == ToolSafetyLevel.Forbidden)
+            {
+                var error = $"Tool '{tool.Name}' is forbidden.";
+
+                stepResults.Add(ToolExecutionStepResult.Failure(
+                    tool.Name,
+                    arguments,
+                    error));
+
+                return ToolExecutionResult.Failure(error, stepResults);
+            }
+
+            if (tool.SafetyLevel is ToolSafetyLevel.Dangerous or ToolSafetyLevel.ConfirmationRequired)
+            {
+                var error = $"Tool '{tool.Name}' requires confirmation.";
+
+                stepResults.Add(ToolExecutionStepResult.Failure(
+                    tool.Name,
+                    arguments,
+                    error));
+
+                return ToolExecutionResult.Failure(error, stepResults);
+            }
+
+            if (!ToolArgumentValidator.Validate(
+                    tool.ParametersSchema,
+                    arguments,
+                    out var validationError))
+            {
+                var error = $"Invalid arguments for '{tool.Name}': {validationError}";
+
+                stepResults.Add(ToolExecutionStepResult.Failure(
+                    tool.Name,
+                    arguments,
+                    error));
+
+                return ToolExecutionResult.Failure(error, stepResults);
+            }
 
             var context = new ToolExecutionContext(
-                userId,
+                UserId: userId,
+                Arguments: arguments,
+                AssistantContext: assistantContext);
+
+            var result = await tool.ExecuteAsync(context, ct);
+
+            if (!result.IsSuccess)
+            {
+                var error = result.Message ?? $"Tool '{tool.Name}' failed.";
+
+                stepResults.Add(ToolExecutionStepResult.Failure(
+                    tool.Name,
+                    arguments,
+                    error));
+
+                return ToolExecutionResult.Failure(error, stepResults);
+            }
+
+            stepResults.Add(ToolExecutionStepResult.Success(
+                tool.Name,
                 arguments,
-                assistantContext);
-
-            last = await tool.ExecuteAsync(context, ct);
-
-            if (!last.IsSuccess)
-                return last;
+                result));
         }
 
-        return last ?? ToolResult.Success();
+        var last = stepResults.LastOrDefault();
+
+        return ToolExecutionResult.Success(
+            message: last?.Message ?? "Готово.",
+            data: last?.Data,
+            steps: stepResults);
     }
 }

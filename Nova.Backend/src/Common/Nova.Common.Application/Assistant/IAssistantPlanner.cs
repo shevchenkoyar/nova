@@ -4,7 +4,7 @@ namespace Nova.Common.Application.Assistant;
 
 public interface IAssistantPlanner
 {
-    Task<AssistantPlan?> BuildPlanAsync(
+    Task<PlannerResult> BuildPlanAsync(
         string text,
         IReadOnlyCollection<ToolDescriptor> tools,
         AssistantContext context,

@@ -25,7 +25,10 @@ public static class ApplicationConfiguration
             services.AddSingleton(new ChatClient(
                 model: "gpt-5.4-mini",
                 apiKey: configuration["OpenAI:ApiKey"]));
-            services.AddScoped<IAssistantPlanner, OpenAiPlanner>();
+
+            services.AddScoped<OpenAiPlanner>();
+            services.AddScoped<IAssistantPlanner>(sp =>
+                new RetryAssistantPlanner(sp.GetRequiredService<OpenAiPlanner>()));
             
             services
                 .RegisterCqrsHandlers(moduleAssemblies)
