@@ -1,8 +1,12 @@
 ﻿using System.Reflection;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Nova.Common.Application.Assistant;
 using Nova.Common.Application.Decorators;
 using Nova.Common.Application.Messaging;
+using Nova.Common.Application.Tools;
+using OpenAI.Chat;
 
 namespace Nova.Common.Application;
 
@@ -10,8 +14,19 @@ public static class ApplicationConfiguration
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddApplication(Assembly[] moduleAssemblies)
+        public IServiceCollection AddApplication(Assembly[] moduleAssemblies, IConfigurationManager configuration)
         {
+            // Temporary: register common services here. In the future, we can split it into multiple modules if needed.
+            services.AddScoped<ContextBuilder>();
+            services.AddScoped<AssistantService>();
+            
+            services.AddScoped<ToolExecutor>();
+            services.AddScoped<INovaToolRegistry, NovaToolRegistry>();
+            services.AddSingleton(new ChatClient(
+                model: "gpt-5.4-mini",
+                apiKey: configuration["OpenAI:ApiKey"]));
+            services.AddScoped<IAssistantPlanner, OpenAiPlanner>();
+            
             services
                 .RegisterCqrsHandlers(moduleAssemblies)
                 .RegisterCqrsDecorators();

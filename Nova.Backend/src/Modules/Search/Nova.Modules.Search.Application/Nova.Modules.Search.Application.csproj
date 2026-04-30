@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Common\Nova.Common.Application\Nova.Common.Application.csproj" />
+      <ProjectReference Include="..\Nova.Modules.Search.Contracts\Nova.Modules.Search.Contracts.csproj" />
+    </ItemGroup>
+
+</Project>

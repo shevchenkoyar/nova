@@ -8,6 +8,9 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Aspire\Nova.Aspire.ServiceDefaults\Nova.Aspire.ServiceDefaults.csproj" />
       <ProjectReference Include="..\..\Modules\Conversation\Nova.Modules.Conversation.Infrastructure\Nova.Modules.Conversation.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\Modules\Search\Nova.Modules.Search.Infrastructure\Nova.Modules.Search.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\Modules\Memory\Nava.Modules.Memory.Application\Nava.Modules.Memory.Application.csproj" />
+      <ProjectReference Include="..\..\Modules\Search\Nova.Modules.Search.Application\Nova.Modules.Search.Application.csproj" />
     </ItemGroup>
     
 </Project>

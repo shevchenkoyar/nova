@@ -1,13 +1,10 @@
-using System.ComponentModel;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Nova.Common.Application.Messaging;
+using Nova.Common.Application.Assistant;
 using Nova.Common.Presentation.Endpoints;
-using Nova.Common.Presentation.Idempotency;
-using Nova.Common.Presentation.Results;
-using Nova.Modules.Conversation.Application.Messages.Commands.CreateMessage;
+using Nova.Contracts.Assistant;
 
 namespace Nova.Modules.Conversation.Presentation.Conversation;
 
@@ -19,28 +16,16 @@ internal sealed class CreateMessage : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("messages", async (
-            IdempotencyKey idempotencyKey,
-            CreateMessageRequest request,
-            ICommandHandler<CreateMessageCommand, string> handler,
-            CancellationToken cancellationToken) =>
-        {
-            var result = await handler.Handle(new CreateMessageCommand(
-                idempotencyKey, 
-                request.Message), 
-                cancellationToken);
-            
-            return result.Match(Results.Ok, ApiResults.Problem);
-        })
-        .ProducesValidationProblem()
-        .WithName(EndpointName)
-        .WithTags(Tags.Conversation)
-        .RequireIdempotencyKey();
-    }
-    
-    [UsedImplicitly]
-    internal sealed class CreateMessageRequest
-    {
-        [Description("Echos back the message")]
-        public required string Message { get; [UsedImplicitly] init; }
+                AssistantMessageRequest request,
+                AssistantService assistant,
+                CancellationToken cancellationToken) =>
+            {
+                var response = await assistant.HandleAsync(request, cancellationToken);
+
+                return Results.Ok(response);
+            })
+            .ProducesValidationProblem()
+            .WithName(EndpointName)
+            .WithTags(Tags.Conversation);
     }
 }

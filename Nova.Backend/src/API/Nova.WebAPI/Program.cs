@@ -1,8 +1,13 @@
 using System.Reflection;
+using Nava.Modules.Memory.Application;
 using Nova.Common.Application;
+using Nova.Common.Application.Assistant;
 using Nova.Common.Infrastructure;
 using Nova.Common.Presentation.Endpoints;
+using Nova.Contracts.Assistant;
 using Nova.Modules.Conversation.Infrastructure;
+using Nova.Modules.Search.Application;
+using Nova.Modules.Search.Infrastructure;
 using Nova.WebAPI.Middleware;
 using Scalar.AspNetCore;
 
@@ -22,11 +27,15 @@ Assembly[] moduleApplicationAssemblies =
     Nova.Modules.Conversation.Application.AssemblyReference.Assembly,
 ];
 
-builder.Services.AddApplication(moduleApplicationAssemblies);
+builder.Services.AddApplication(moduleApplicationAssemblies, builder.Configuration);
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddConversationModule(builder.Configuration);
+
+builder.Services.AddSearchModule();
+
+builder.Services.AddMemoryModule();
 
 var app = builder.Build();
 

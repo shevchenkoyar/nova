@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     
     <ItemGroup>
+      <ProjectReference Include="..\..\..\..\Nova.Shared\Nova.Contracts\Nova.Contracts.csproj" />
+      <ProjectReference Include="..\..\Modules\Memory\Nava.Modules.Memory.Contracts\Nava.Modules.Memory.Contracts.csproj" />
       <ProjectReference Include="..\Nova.Common.Domain\Nova.Common.Domain.csproj" />
     </ItemGroup>
     
     <ItemGroup>
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+      <PackageReference Include="OllamaSharp" />
+      <PackageReference Include="OpenAI" />
       <PackageReference Include="Scrutor" />
       <PackageReference Include="Serilog" />
     </ItemGroup>

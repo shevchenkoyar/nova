@@ -28,8 +28,16 @@
     <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.IntegrationEvents/Nova.Modules.Conversation.IntegrationEvents.csproj" />
     <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.Presentation/Nova.Modules.Conversation.Presentation.csproj" />
   </Folder>
-  <Folder Name="/src/Modules/Memory/" />
-  <Folder Name="/src/Modules/Search/" />
+  <Folder Name="/src/Modules/Memory/">
+    <Project Path="src/Modules/Memory/Nava.Modules.Memory.Application/Nava.Modules.Memory.Application.csproj" />
+    <Project Path="src/Modules/Memory/Nava.Modules.Memory.Contracts/Nava.Modules.Memory.Contracts.csproj" />
+    <Project Path="src/Modules/Memory/Nava.Modules.Memory.Domain/Nava.Modules.Memory.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Search/">
+    <Project Path="src/Modules/Search/Nova.Modules.Search.Application/Nova.Modules.Search.Application.csproj" />
+    <Project Path="src/Modules/Search/Nova.Modules.Search.Contracts/Nova.Modules.Search.Contracts.csproj" />
+    <Project Path="src/Modules/Search/Nova.Modules.Search.Infrastructure/Nova.Modules.Search.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/tests/" />
   <Project Path="../Nova.Shared/Nova.Contracts/Nova.Contracts.csproj" />
 </Solution>
