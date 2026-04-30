@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Aspire\Nova.Aspire.ServiceDefaults\Nova.Aspire.ServiceDefaults.csproj" />
+      <ProjectReference Include="..\Modules\Conversation\Nova.Modules.Conversation.Infrastructure\Nova.Modules.Conversation.Infrastructure.csproj" />
       <ProjectReference Include="..\Modules\Relationships\Nova.Modules.Relationships.Infrastructure\Nova.Modules.Relationships.Infrastructure.csproj" />
     </ItemGroup>
 </Project>

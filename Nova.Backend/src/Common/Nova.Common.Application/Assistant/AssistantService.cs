@@ -9,12 +9,18 @@ public sealed class AssistantService(
     INovaToolRegistry toolRegistry,
     ToolExecutor toolExecutor,
     ContextBuilder contextBuilder,
-    IAssistantResponseGenerator responseGenerator)
+    IAssistantResponseGenerator responseGenerator,
+    IConversationHistory history)
 {
     public async Task<AssistantMessageResponse> HandleAsync(
         AssistantMessageRequest request,
         CancellationToken ct)
     {
+        await history.AddUserMessageAsync(
+            request.UserId,
+            request.Text,
+            ct);
+
         var context = await contextBuilder.BuildAsync(
             request.UserId,
             request.Text,
@@ -23,13 +29,23 @@ public sealed class AssistantService(
         if (context.AccessLevel == RelationshipAccessLevel.Blocked &&
             !IsRecoveryRequest(request.Text))
         {
-            return new AssistantMessageResponse(
-                Message: RelationshipAccessPolicy.BuildBlockedMessage(context),
+            var blockedMessage = RelationshipAccessPolicy.BuildBlockedMessage(context);
+
+            var blockedResponse = new AssistantMessageResponse(
+                Message: blockedMessage,
                 Data: new
                 {
                     context.AccessLevel,
                     context.Relationship
                 });
+
+            await history.AddAssistantMessageAsync(
+                request.UserId,
+                blockedResponse.Message,
+                blockedResponse.Data,
+                ct);
+
+            return blockedResponse;
         }
 
         var tools = toolRegistry.GetDescriptors();
@@ -40,6 +56,17 @@ public sealed class AssistantService(
             context,
             ct);
 
+        await history.AddPlannerMessageAsync(
+            request.UserId,
+            plannerResult.IsSuccess ? "Planner completed." : "Planner failed.",
+            new
+            {
+                plannerResult.IsSuccess,
+                plannerResult.Error,
+                plannerResult.Plan
+            },
+            ct);
+
         if (!plannerResult.IsSuccess)
         {
             var message = await responseGenerator.GenerateAsync(
@@ -48,7 +75,7 @@ public sealed class AssistantService(
                 toolExecutionResult: null,
                 ct);
 
-            return new AssistantMessageResponse(
+            var response = new AssistantMessageResponse(
                 Message: message,
                 Data: new
                 {
@@ -56,6 +83,14 @@ public sealed class AssistantService(
                     context.AccessLevel,
                     context.Relationship
                 });
+
+            await history.AddAssistantMessageAsync(
+                request.UserId,
+                response.Message,
+                response.Data,
+                ct);
+
+            return response;
         }
 
         var plan = plannerResult.Plan;
@@ -68,13 +103,21 @@ public sealed class AssistantService(
                 context,
                 ct);
 
+            await history.AddToolMessageAsync(
+                request.UserId,
+                executionResult.IsSuccess
+                    ? "Tool execution completed."
+                    : "Tool execution failed.",
+                executionResult,
+                ct);
+
             var message = await responseGenerator.GenerateAsync(
                 request.Text,
                 context,
                 executionResult,
                 ct);
 
-            return new AssistantMessageResponse(
+            var response = new AssistantMessageResponse(
                 Message: message,
                 Data: new
                 {
@@ -84,6 +127,14 @@ public sealed class AssistantService(
                     context.AccessLevel,
                     context.Relationship
                 });
+
+            await history.AddAssistantMessageAsync(
+                request.UserId,
+                response.Message,
+                response.Data,
+                ct);
+
+            return response;
         }
 
         var directMessage = await responseGenerator.GenerateAsync(
@@ -92,13 +143,21 @@ public sealed class AssistantService(
             toolExecutionResult: null,
             ct);
 
-        return new AssistantMessageResponse(
+        var directResponse = new AssistantMessageResponse(
             Message: directMessage,
             Data: new
             {
                 context.AccessLevel,
                 context.Relationship
             });
+
+        await history.AddAssistantMessageAsync(
+            request.UserId,
+            directResponse.Message,
+            directResponse.Data,
+            ct);
+
+        return directResponse;
     }
 
     private static bool IsRecoveryRequest(string text)

@@ -3,4 +3,7 @@
     <ProjectReference Include="..\..\..\Common\Nova.Common.Infrastructure\Nova.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\Nova.Modules.Conversation.Presentation\Nova.Modules.Conversation.Presentation.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+  </ItemGroup>
 </Project>
