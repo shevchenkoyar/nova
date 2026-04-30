@@ -39,5 +39,7 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     <!-- Memory -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
+    <!-- Search -->
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.7" />
   </ItemGroup>
 </Project>

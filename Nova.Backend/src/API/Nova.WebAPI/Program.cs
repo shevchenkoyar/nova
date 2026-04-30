@@ -33,7 +33,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddConversationModule(builder.Configuration);
 
-builder.Services.AddSearchModule();
+builder.Services.AddSearchModule(builder.Configuration);
 
 builder.Services.AddMemoryModule();
 

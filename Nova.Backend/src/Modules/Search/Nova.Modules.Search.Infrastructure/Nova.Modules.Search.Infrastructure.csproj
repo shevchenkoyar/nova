@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Nova.Modules.Search.Application\Nova.Modules.Search.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Http" />
+    </ItemGroup>
+
 </Project>

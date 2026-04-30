@@ -10,11 +10,29 @@ public sealed class SearchWebTool(ISearchProvider searchProvider) : INovaTool
     public string Description => "Searches the web for information.";
 
     public string UsageRules => """
-                                Use this tool when the user asks to search, find, look up, research, or verify current information.
-                                Russian triggers: "найди", "поищи", "проверь в интернете", "узнай".
-                                Always pass arguments as:
-                                { "query": "search query" }
-                                """;
+        Use this tool when the user asks to search, find, look up, research, or verify current information.
+
+        Russian triggers:
+        - "найди"
+        - "поищи"
+        - "проверь в интернете"
+        - "узнай"
+        - "найди информацию"
+        - "погугли"
+
+        English triggers:
+        - "search"
+        - "find"
+        - "look up"
+        - "research"
+        - "verify"
+
+        Always pass arguments as:
+        { "query": "search query", "limit": 5 }
+
+        If user asks in Russian, keep the query in Russian unless an English query is clearly better.
+        Do not use this tool for ordinary conversation.
+        """;
 
     public object ParametersSchema => new
     {
@@ -25,6 +43,11 @@ public sealed class SearchWebTool(ISearchProvider searchProvider) : INovaTool
             {
                 type = "string",
                 description = "The search query."
+            },
+            limit = new
+            {
+                type = "integer",
+                description = "Maximum number of search results. Default is 5."
             }
         },
         required = new[] { "query" }
@@ -37,16 +60,35 @@ public sealed class SearchWebTool(ISearchProvider searchProvider) : INovaTool
         CancellationToken ct)
     {
         if (!context.Arguments.TryGetProperty("query", out var queryElement))
-            return ToolResult.Failure("Query is required.");
+            return ToolResult.Failure("Search query is required.");
 
         var query = queryElement.GetString();
 
         if (string.IsNullOrWhiteSpace(query))
-            return ToolResult.Failure("Query is empty.");
+            return ToolResult.Failure("Search query is empty.");
+
+        var limit = 5;
+
+        if (context.Arguments.TryGetProperty("limit", out var limitElement)
+            && limitElement.ValueKind == System.Text.Json.JsonValueKind.Number
+            && limitElement.TryGetInt32(out var parsedLimit))
+        {
+            limit = Math.Clamp(parsedLimit, 1, 10);
+        }
 
         var result = await searchProvider.SearchAsync(
-            new SearchRequest(context.UserId, query),
+            new SearchRequest(
+                context.UserId,
+                query.Trim(),
+                limit),
             ct);
+
+        if (result.Items.Count == 0)
+        {
+            return ToolResult.Success(
+                "Я ничего не нашла по этому запросу.",
+                result);
+        }
 
         return ToolResult.Success(
             $"Нашла {result.Items.Count} результатов.",
