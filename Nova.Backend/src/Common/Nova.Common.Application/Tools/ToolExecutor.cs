@@ -38,6 +38,21 @@ public sealed class ToolExecutor(INovaToolRegistry registry)
                 return ToolExecutionResult.Failure(error, stepResults);
             }
 
+            if (!RelationshipAccessPolicy.CanExecuteTool(
+                    assistantContext,
+                    tool.SafetyLevel))
+            {
+                var error = RelationshipAccessPolicy.BuildBlockedMessage(
+                    assistantContext);
+
+                stepResults.Add(ToolExecutionStepResult.Failure(
+                    tool.Name,
+                    arguments,
+                    error));
+
+                return ToolExecutionResult.Failure(error, stepResults);
+            }
+
             if (tool.SafetyLevel is ToolSafetyLevel.Dangerous or ToolSafetyLevel.ConfirmationRequired)
             {
                 var error = $"Tool '{tool.Name}' requires confirmation.";

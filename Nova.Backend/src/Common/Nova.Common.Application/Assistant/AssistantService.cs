@@ -1,5 +1,6 @@
 using Nova.Common.Application.Tools;
 using Nova.Contracts.Assistant;
+using Nova.Modules.Relationships.Contracts;
 
 namespace Nova.Common.Application.Assistant;
 
@@ -7,7 +8,8 @@ public sealed class AssistantService(
     IAssistantPlanner planner,
     INovaToolRegistry toolRegistry,
     ToolExecutor toolExecutor,
-    ContextBuilder contextBuilder)
+    ContextBuilder contextBuilder,
+    IAssistantResponseGenerator responseGenerator)
 {
     public async Task<AssistantMessageResponse> HandleAsync(
         AssistantMessageRequest request,
@@ -17,6 +19,18 @@ public sealed class AssistantService(
             request.UserId,
             request.Text,
             ct);
+
+        if (context.AccessLevel == RelationshipAccessLevel.Blocked &&
+            !IsRecoveryRequest(request.Text))
+        {
+            return new AssistantMessageResponse(
+                Message: RelationshipAccessPolicy.BuildBlockedMessage(context),
+                Data: new
+                {
+                    context.AccessLevel,
+                    context.Relationship
+                });
+        }
 
         var tools = toolRegistry.GetDescriptors();
 
@@ -28,11 +42,19 @@ public sealed class AssistantService(
 
         if (!plannerResult.IsSuccess)
         {
+            var message = await responseGenerator.GenerateAsync(
+                request.Text,
+                context,
+                toolExecutionResult: null,
+                ct);
+
             return new AssistantMessageResponse(
-                Message: "Я не смогла построить план действия.",
+                Message: message,
                 Data: new
                 {
-                    plannerResult.Error
+                    plannerResult.Error,
+                    context.AccessLevel,
+                    context.Relationship
                 });
         }
 
@@ -46,51 +68,44 @@ public sealed class AssistantService(
                 context,
                 ct);
 
-            if (!executionResult.IsSuccess)
-            {
-                return new AssistantMessageResponse(
-                    Message: "Я не смогла выполнить действие.",
-                    Data: new
-                    {
-                        executionResult.Error,
-                        executionResult.Steps
-                    });
-            }
+            var message = await responseGenerator.GenerateAsync(
+                request.Text,
+                context,
+                executionResult,
+                ct);
 
             return new AssistantMessageResponse(
-                Message: executionResult.Message ?? "Готово.",
+                Message: message,
                 Data: new
                 {
                     executionResult.Data,
-                    executionResult.Steps
+                    executionResult.Steps,
+                    executionResult.Error,
+                    context.AccessLevel,
+                    context.Relationship
                 });
         }
 
+        var directMessage = await responseGenerator.GenerateAsync(
+            request.Text,
+            context,
+            toolExecutionResult: null,
+            ct);
+
         return new AssistantMessageResponse(
-            Message: BuildDirectAnswer(request.Text, context),
-            Data: null);
+            Message: directMessage,
+            Data: new
+            {
+                context.AccessLevel,
+                context.Relationship
+            });
     }
 
-    private static string BuildDirectAnswer(
-        string text,
-        AssistantContext context)
+    private static bool IsRecoveryRequest(string text)
     {
-        if (text.Contains("dlms", StringComparison.OrdinalIgnoreCase))
-        {
-            return context.ResponseStyle == ResponseStyle.Short
-                ? "DLMS — протокол обмена данными со счётчиками."
-                : "DLMS — это протокол обмена данными со счётчиками. Он используется для чтения показаний, профилей, событий и управления устройствами.";
-        }
-
-        if (text.Contains("привет", StringComparison.OrdinalIgnoreCase))
-        {
-            return context.ResponseStyle == ResponseStyle.Short
-                ? "Привет."
-                : "Привет! Я Nova. Пока умею работать с памятью, поиском и простыми ответами.";
-        }
-
-        return context.ResponseStyle == ResponseStyle.Short
-            ? "Пока не знаю."
-            : "Пока не знаю, как ответить на это без дополнительных модулей.";
+        return text.Contains("извини", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("прости", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("sorry", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("apolog", StringComparison.OrdinalIgnoreCase);
     }
 }

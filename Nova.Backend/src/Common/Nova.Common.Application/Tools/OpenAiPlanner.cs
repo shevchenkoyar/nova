@@ -32,17 +32,17 @@ public sealed class OpenAiPlanner(ChatClient client) : IAssistantPlanner
     }
 
     private static string BuildSystemPrompt(
-        IReadOnlyCollection<ToolDescriptor> tools,
-        AssistantContext context)
-    {
-        var toolList = string.Join("\n\n",
-            tools.Select(t =>
-            {
-                var schemaJson = JsonSerializer.Serialize(
-                    t.ParametersSchema,
-                    JsonOptions);
+    IReadOnlyCollection<ToolDescriptor> tools,
+    AssistantContext context)
+{
+    var toolList = string.Join("\n\n",
+        tools.Select(t =>
+        {
+            var schemaJson = JsonSerializer.Serialize(
+                t.ParametersSchema,
+                JsonOptions);
 
-                return $$"""
+            return $$"""
 Tool: {{t.Name}}
 Description: {{t.Description}}
 
@@ -52,18 +52,32 @@ Usage rules:
 Arguments JSON schema:
 {{schemaJson}}
 """;
-            }));
+        }));
 
-        var memoryBlock = context.RelevantMemory.Count == 0
-            ? "No relevant memory."
-            : string.Join("\n", context.RelevantMemory.Select(x => $"- {x.Content}"));
+    var memoryBlock = context.RelevantMemory.Count == 0
+        ? "No relevant memory."
+        : string.Join("\n", context.RelevantMemory.Select(x => $"- {x.Content}"));
 
-        return $$"""
+    var relationshipBlock = context.Relationship is null
+        ? "No relationship profile."
+        : $$"""
+Access level: {{context.Relationship.AccessLevel}}
+Trust: {{context.Relationship.Trust}}
+Warmth: {{context.Relationship.Warmth}}
+Respect: {{context.Relationship.Respect}}
+Annoyance: {{context.Relationship.Annoyance}}
+OffenseScore: {{context.Relationship.OffenseScore}}
+""";
+
+    return $$"""
 You are an AI assistant planner.
 Your job is to decide whether the user's request requires tools.
 
 User context:
 Response style: {{context.ResponseStyle}}
+
+Relationship:
+{{relationshipBlock}}
 
 Relevant memory:
 {{memoryBlock}}
@@ -94,8 +108,11 @@ Rules:
 - Do not use markdown.
 - Do not wrap JSON in ```json.
 - If arguments do not match schema, fix them before returning.
+- If relationship access is ReadOnly, BasicOnly, or Blocked, avoid planning non-readonly tools.
+- If the user apologizes, you may use relationships.register_interaction with kind = "Apology".
+- If the user is rude, aggressive, or violates boundaries, you may use relationships.register_interaction with the appropriate kind.
 """;
-    }
+}
 
     private static PlannerResult ParsePlan(string content)
     {

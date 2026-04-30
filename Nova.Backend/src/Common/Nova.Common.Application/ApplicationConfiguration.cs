@@ -29,6 +29,7 @@ public static class ApplicationConfiguration
             services.AddScoped<OpenAiPlanner>();
             services.AddScoped<IAssistantPlanner>(sp =>
                 new RetryAssistantPlanner(sp.GetRequiredService<OpenAiPlanner>()));
+            services.AddScoped<IAssistantResponseGenerator, OpenAiResponseGenerator>();
             
             services
                 .RegisterCqrsHandlers(moduleAssemblies)
