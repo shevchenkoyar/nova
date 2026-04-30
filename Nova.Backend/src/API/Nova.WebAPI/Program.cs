@@ -1,12 +1,10 @@
 using System.Reflection;
 using Nava.Modules.Memory.Application;
 using Nova.Common.Application;
-using Nova.Common.Application.Assistant;
 using Nova.Common.Infrastructure;
 using Nova.Common.Presentation.Endpoints;
-using Nova.Contracts.Assistant;
 using Nova.Modules.Conversation.Infrastructure;
-using Nova.Modules.Search.Application;
+using Nova.Modules.Relationships.Infrastructure;
 using Nova.Modules.Search.Infrastructure;
 using Nova.WebAPI.Middleware;
 using Scalar.AspNetCore;
@@ -34,6 +32,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddConversationModule(builder.Configuration);
 
 builder.Services.AddSearchModule(builder.Configuration);
+
+builder.Services.AddRelationshipsModule(builder.Configuration);
 
 builder.Services.AddMemoryModule();
 

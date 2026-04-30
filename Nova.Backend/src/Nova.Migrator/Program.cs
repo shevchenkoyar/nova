@@ -1,8 +1,12 @@
+using Nova.Migrator;
+using Nova.Modules.Relationships.Infrastructure;
+using Nova.Modules.Relationships.Infrastructure.Database;
+
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.AddServiceDefaults();
 
-// builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddRelationshipsModule(builder.Configuration);
 
 using var host = builder.Build();
 
@@ -14,7 +18,6 @@ var logger = scope.ServiceProvider
 
 logger.LogInformation("Applying database migrations...");
 
-// scope.ApplyMigration<ConversationDbContext>(logger);
-// scope.ApplyMigration<MemoryDbContext>(logger);
+await scope.ApplyMigration<RelationshipsDbContext>(logger);
 
 logger.LogInformation("Database migrations applied successfully.");

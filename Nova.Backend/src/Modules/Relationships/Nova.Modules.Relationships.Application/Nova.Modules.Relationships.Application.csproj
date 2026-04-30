@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Common\Nova.Common.Application\Nova.Common.Application.csproj" />
+      <ProjectReference Include="..\Nova.Modules.Relationships.Contracts\Nova.Modules.Relationships.Contracts.csproj" />
+      <ProjectReference Include="..\Nova.Modules.Relationships.Domain\Nova.Modules.Relationships.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

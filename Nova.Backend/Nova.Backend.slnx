@@ -33,6 +33,12 @@
     <Project Path="src/Modules/Memory/Nava.Modules.Memory.Contracts/Nava.Modules.Memory.Contracts.csproj" />
     <Project Path="src/Modules/Memory/Nava.Modules.Memory.Domain/Nava.Modules.Memory.Domain.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/Relationships/">
+    <Project Path="src/Modules/Relationships/Nova.Modules.Relationships.Application/Nova.Modules.Relationships.Application.csproj" />
+    <Project Path="src/Modules/Relationships/Nova.Modules.Relationships.Contracts/Nova.Modules.Relationships.Contracts.csproj" />
+    <Project Path="src/Modules/Relationships/Nova.Modules.Relationships.Domain/Nova.Modules.Relationships.Domain.csproj" />
+    <Project Path="src/Modules/Relationships/Nova.Modules.Relationships.Infrastructure/Nova.Modules.Relationships.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/Search/">
     <Project Path="src/Modules/Search/Nova.Modules.Search.Application/Nova.Modules.Search.Application.csproj" />
     <Project Path="src/Modules/Search/Nova.Modules.Search.Contracts/Nova.Modules.Search.Contracts.csproj" />
