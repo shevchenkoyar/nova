@@ -1,5 +1,5 @@
 using System.Reflection;
-using Nava.Modules.Memory.Application;
+using Nava.Modules.Memory.Infrastructure;
 using Nova.Common.Application;
 using Nova.Common.Infrastructure;
 using Nova.Common.Presentation.Endpoints;

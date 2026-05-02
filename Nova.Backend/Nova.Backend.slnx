@@ -32,6 +32,7 @@
     <Project Path="src/Modules/Memory/Nava.Modules.Memory.Application/Nava.Modules.Memory.Application.csproj" />
     <Project Path="src/Modules/Memory/Nava.Modules.Memory.Contracts/Nava.Modules.Memory.Contracts.csproj" />
     <Project Path="src/Modules/Memory/Nava.Modules.Memory.Domain/Nava.Modules.Memory.Domain.csproj" />
+    <Project Path="src/Modules/Memory/Nava.Modules.Memory.Infrastructure/Nava.Modules.Memory.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Reader/">
     <Project Path="src/Modules/Reader/Nova.Modules.Reader.Application/Nova.Modules.Reader.Application.csproj" />
