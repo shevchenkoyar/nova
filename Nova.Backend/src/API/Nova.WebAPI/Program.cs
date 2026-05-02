@@ -4,7 +4,9 @@ using Nova.Common.Application;
 using Nova.Common.Infrastructure;
 using Nova.Common.Presentation.Endpoints;
 using Nova.Modules.Conversation.Infrastructure;
+using Nova.Modules.Reader.Infrastructure;
 using Nova.Modules.Relationships.Infrastructure;
+using Nova.Modules.Research.Application;
 using Nova.Modules.Search.Infrastructure;
 using Nova.WebAPI.Middleware;
 using Scalar.AspNetCore;
@@ -34,6 +36,10 @@ builder.Services.AddConversationModule(builder.Configuration);
 builder.Services.AddSearchModule(builder.Configuration);
 
 builder.Services.AddRelationshipsModule(builder.Configuration);
+
+builder.Services.AddReaderModule(builder.Configuration);
+
+builder.Services.AddResearchModule(builder.Configuration);
 
 builder.Services.AddMemoryModule();
 

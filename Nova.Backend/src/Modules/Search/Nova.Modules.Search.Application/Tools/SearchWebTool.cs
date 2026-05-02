@@ -32,6 +32,9 @@ public sealed class SearchWebTool(ISearchProvider searchProvider) : INovaTool
 
         If user asks in Russian, keep the query in Russian unless an English query is clearly better.
         Do not use this tool for ordinary conversation.
+        
+        Do NOT use this tool when the user asks to make a summary, research, study, analyze, or synthesize information.
+        Use research.run instead.
         """;
 
     public object ParametersSchema => new

@@ -41,5 +41,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
     <!-- Search -->
     <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.7" />
+    <!-- Reader -->
+    <PackageVersion Include="HtmlAgilityPack" Version="1.12.4" />
   </ItemGroup>
 </Project>
