@@ -10,7 +10,9 @@ public sealed class AssistantService(
     ToolExecutor toolExecutor,
     ContextBuilder contextBuilder,
     IAssistantResponseGenerator responseGenerator,
-    IConversationHistory history)
+    IConversationHistory history,
+    IRelationshipEvaluator relationshipEvaluator,
+    IRelationshipsModuleApi relationships)
 {
     public async Task<AssistantMessageResponse> HandleAsync(
         AssistantMessageRequest request,
@@ -19,6 +21,21 @@ public sealed class AssistantService(
         await history.AddUserMessageAsync(
             request.UserId,
             request.Text,
+            ct);
+
+        var initialContext = await contextBuilder.BuildAsync(
+            request.UserId,
+            request.Text,
+            ct);
+
+        var relationshipDelta = await relationshipEvaluator.EvaluateAsync(
+            request.UserId,
+            request.Text,
+            initialContext,
+            ct);
+
+        await relationships.AdjustAsync(
+            relationshipDelta,
             ct);
 
         var context = await contextBuilder.BuildAsync(
@@ -35,6 +52,7 @@ public sealed class AssistantService(
                 Message: blockedMessage,
                 Data: new
                 {
+                    RelationshipDelta = relationshipDelta,
                     context.AccessLevel,
                     context.Relationship
                 });
@@ -63,7 +81,10 @@ public sealed class AssistantService(
             {
                 plannerResult.IsSuccess,
                 plannerResult.Error,
-                plannerResult.Plan
+                plannerResult.Plan,
+                RelationshipDelta = relationshipDelta,
+                context.AccessLevel,
+                context.Relationship
             },
             ct);
 
@@ -80,6 +101,7 @@ public sealed class AssistantService(
                 Data: new
                 {
                     plannerResult.Error,
+                    RelationshipDelta = relationshipDelta,
                     context.AccessLevel,
                     context.Relationship
                 });
@@ -108,7 +130,13 @@ public sealed class AssistantService(
                 executionResult.IsSuccess
                     ? "Tool execution completed."
                     : "Tool execution failed.",
-                executionResult,
+                new
+                {
+                    ExecutionResult = executionResult,
+                    RelationshipDelta = relationshipDelta,
+                    context.AccessLevel,
+                    context.Relationship
+                },
                 ct);
 
             var message = await responseGenerator.GenerateAsync(
@@ -124,6 +152,7 @@ public sealed class AssistantService(
                     executionResult.Data,
                     executionResult.Steps,
                     executionResult.Error,
+                    RelationshipDelta = relationshipDelta,
                     context.AccessLevel,
                     context.Relationship
                 });
@@ -147,6 +176,7 @@ public sealed class AssistantService(
             Message: directMessage,
             Data: new
             {
+                RelationshipDelta = relationshipDelta,
                 context.AccessLevel,
                 context.Relationship
             });

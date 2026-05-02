@@ -109,8 +109,6 @@ Rules:
 - Do not wrap JSON in ```json.
 - If arguments do not match schema, fix them before returning.
 - If relationship access is ReadOnly, BasicOnly, or Blocked, avoid planning non-readonly tools.
-- If the user apologizes, you may use relationships.register_interaction with kind = "Apology".
-- If the user is rude, aggressive, or violates boundaries, you may use relationships.register_interaction with the appropriate kind.
 If both search.web and research.run seem applicable:
 - choose research.run when the user asks for a summary, explanation, analysis, or conclusions.
 - choose search.web only when the user asks for links or raw search results.

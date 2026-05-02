@@ -19,7 +19,6 @@ public static class RelationshipsModule
             services.AddScoped<IRelationshipsModuleApi, RelationshipsModuleApi>();
             
             services.AddScoped<INovaTool, GetRelationshipStatusTool>();
-            services.AddScoped<INovaTool, RegisterRelationshipInteractionTool>();
             
             var connectionString = configuration.GetConnectionString("nova-db");
 

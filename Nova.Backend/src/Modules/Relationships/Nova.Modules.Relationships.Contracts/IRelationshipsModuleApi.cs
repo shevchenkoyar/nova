@@ -9,4 +9,8 @@ public interface IRelationshipsModuleApi
     Task<RelationshipProfileDto> RegisterInteractionAsync(
         RegisterInteractionRequest request,
         CancellationToken ct);
+    
+    Task<RelationshipProfileDto> AdjustAsync(
+        AdjustRelationshipRequest request,
+        CancellationToken ct);
 }

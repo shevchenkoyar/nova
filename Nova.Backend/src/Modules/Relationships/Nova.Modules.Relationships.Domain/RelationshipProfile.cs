@@ -161,4 +161,21 @@ public sealed class RelationshipProfile
     private void DecreaseOffense(int value) => OffenseScore = Clamp(OffenseScore - value);
 
     private static int Clamp(int value) => Math.Clamp(value, 0, 100);
+    
+    public void Adjust(
+        int trustDelta,
+        int warmthDelta,
+        int respectDelta,
+        int familiarityDelta,
+        int annoyanceDelta,
+        int offenseDelta)
+    {
+        Trust = Clamp(Trust + trustDelta);
+        Warmth = Clamp(Warmth + warmthDelta);
+        Respect = Clamp(Respect + respectDelta);
+        Familiarity = Clamp(Familiarity + familiarityDelta);
+        Annoyance = Clamp(Annoyance + annoyanceDelta);
+        OffenseScore = Clamp(OffenseScore + offenseDelta);
+        UpdatedAt = DateTimeOffset.UtcNow;
+    }
 }

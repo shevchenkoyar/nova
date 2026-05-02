@@ -11,15 +11,9 @@ public sealed class RelationshipsModuleApi(
         Guid personId,
         CancellationToken ct)
     {
-        var profile = await repository.GetByPersonIdAsync(personId, ct);
+        var profile = await GetOrCreateProfileAsync(personId, ct);
 
-        if (profile is null)
-        {
-            profile = RelationshipProfile.Create(personId);
-
-            await repository.AddAsync(profile, ct);
-            await repository.SaveChangesAsync(ct);
-        }
+        await repository.SaveChangesAsync(ct);
 
         return Map(profile);
     }
@@ -28,19 +22,50 @@ public sealed class RelationshipsModuleApi(
         RegisterInteractionRequest request,
         CancellationToken ct)
     {
-        var profile = await repository.GetByPersonIdAsync(request.PersonId, ct);
+        var profile = await GetOrCreateProfileAsync(request.PersonId, ct);
 
-        if (profile is null)
-        {
-            profile = RelationshipProfile.Create(request.PersonId);
-            await repository.AddAsync(profile, ct);
-        }
-
-        profile.RegisterInteraction(request.Kind, request.Reason);
+        profile.RegisterInteraction(
+            request.Kind,
+            request.Reason);
 
         await repository.SaveChangesAsync(ct);
 
         return Map(profile);
+    }
+
+    public async Task<RelationshipProfileDto> AdjustAsync(
+        AdjustRelationshipRequest request,
+        CancellationToken ct)
+    {
+        var profile = await GetOrCreateProfileAsync(request.PersonId, ct);
+
+        profile.Adjust(
+            request.TrustDelta,
+            request.WarmthDelta,
+            request.RespectDelta,
+            request.FamiliarityDelta,
+            request.AnnoyanceDelta,
+            request.OffenseDelta);
+
+        await repository.SaveChangesAsync(ct);
+
+        return Map(profile);
+    }
+
+    private async Task<RelationshipProfile> GetOrCreateProfileAsync(
+        Guid personId,
+        CancellationToken ct)
+    {
+        var profile = await repository.GetByPersonIdAsync(personId, ct);
+
+        if (profile is not null)
+            return profile;
+
+        profile = RelationshipProfile.Create(personId);
+
+        await repository.AddAsync(profile, ct);
+
+        return profile;
     }
 
     private static RelationshipProfileDto Map(RelationshipProfile profile)
