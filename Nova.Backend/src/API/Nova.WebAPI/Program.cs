@@ -4,6 +4,7 @@ using Nova.Common.Application;
 using Nova.Common.Infrastructure;
 using Nova.Common.Presentation.Endpoints;
 using Nova.Modules.Conversation.Infrastructure;
+using Nova.Modules.HomeAssistant.Infrastructure;
 using Nova.Modules.Reader.Infrastructure;
 using Nova.Modules.Relationships.Infrastructure;
 using Nova.Modules.Research.Application;
@@ -42,6 +43,8 @@ builder.Services.AddReaderModule(builder.Configuration);
 builder.Services.AddResearchModule(builder.Configuration);
 
 builder.Services.AddMemoryModule();
+
+builder.Services.AddHomeAssistantModule(builder.Configuration);
 
 var app = builder.Build();
 

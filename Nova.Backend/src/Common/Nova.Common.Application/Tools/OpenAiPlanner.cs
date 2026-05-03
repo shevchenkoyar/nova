@@ -109,6 +109,7 @@ Rules:
 - Do not wrap JSON in ```json.
 - If arguments do not match schema, fix them before returning.
 - If relationship access is ReadOnly, BasicOnly, or Blocked, avoid planning non-readonly tools.
+- If a Home Assistant control command is detected and home_assistant.control is available, you MUST call it. Do not answer directly for smart home control requests.
 If both search.web and research.run seem applicable:
 - choose research.run when the user asks for a summary, explanation, analysis, or conclusions.
 - choose search.web only when the user asks for links or raw search results.

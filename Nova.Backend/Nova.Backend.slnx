@@ -28,6 +28,12 @@
     <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.IntegrationEvents/Nova.Modules.Conversation.IntegrationEvents.csproj" />
     <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.Presentation/Nova.Modules.Conversation.Presentation.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/HomeAssistant/">
+    <Project Path="src/Modules/HomeAssistant/Nova.Modules.HomeAssistant.Application/Nova.Modules.HomeAssistant.Application.csproj" />
+    <Project Path="src/Modules/HomeAssistant/Nova.Modules.HomeAssistant.Contracts/Nova.Modules.HomeAssistant.Contracts.csproj" />
+    <Project Path="src/Modules/HomeAssistant/Nova.Modules.HomeAssistant.Domain/Nova.Modules.HomeAssistant.Domain.csproj" />
+    <Project Path="src/Modules/HomeAssistant/Nova.Modules.HomeAssistant.Infrastructure/Nova.Modules.HomeAssistant.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/Memory/">
     <Project Path="src/Modules/Memory/Nava.Modules.Memory.Application/Nava.Modules.Memory.Application.csproj" />
     <Project Path="src/Modules/Memory/Nava.Modules.Memory.Contracts/Nava.Modules.Memory.Contracts.csproj" />
