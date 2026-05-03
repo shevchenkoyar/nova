@@ -7,6 +7,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Aspire\Nova.Aspire.ServiceDefaults\Nova.Aspire.ServiceDefaults.csproj" />
+      <ProjectReference Include="..\..\Modules\Clock\Nova.Modules.Clock.Infrastructure\Nova.Modules.Clock.Infrastructure.csproj" />
       <ProjectReference Include="..\..\Modules\Conversation\Nova.Modules.Conversation.Infrastructure\Nova.Modules.Conversation.Infrastructure.csproj" />
       <ProjectReference Include="..\..\Modules\HomeAssistant\Nova.Modules.HomeAssistant.Infrastructure\Nova.Modules.HomeAssistant.Infrastructure.csproj" />
       <ProjectReference Include="..\..\Modules\Memory\Nava.Modules.Memory.Infrastructure\Nava.Modules.Memory.Infrastructure.csproj" />

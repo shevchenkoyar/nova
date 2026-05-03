@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Common\Nova.Common.Infrastructure\Nova.Common.Infrastructure.csproj" />
+      <ProjectReference Include="..\Nova.Modules.Clock.Application\Nova.Modules.Clock.Application.csproj" />
+    </ItemGroup>
+
+</Project>

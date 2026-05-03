@@ -21,6 +21,10 @@
     <Project Path="src/Common/Nova.Common.Presentation/Nova.Common.Presentation.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Clock/">
+    <Project Path="src/Modules/Clock/Nova.Modules.Clock.Application/Nova.Modules.Clock.Application.csproj" />
+    <Project Path="src/Modules/Clock/Nova.Modules.Clock.Infrastructure/Nova.Modules.Clock.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/Conversation/">
     <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.Application/Nova.Modules.Conversation.Application.csproj" />
     <Project Path="src/Modules/Conversation/Nova.Modules.Conversation.Domain/Nova.Modules.Conversation.Domain.csproj" />

@@ -5,4 +5,6 @@ namespace Nova.Common.Infrastructure.Clock;
 internal sealed class SystemDateTimeProvider : IDateTimeProvider
 {
     public DateTimeOffset UtcNow => DateTimeOffset.UtcNow;
+    
+    public DateTimeOffset Now => DateTimeOffset.Now;
 }

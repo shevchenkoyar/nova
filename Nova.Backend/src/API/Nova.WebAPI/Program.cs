@@ -3,6 +3,7 @@ using Nava.Modules.Memory.Infrastructure;
 using Nova.Common.Application;
 using Nova.Common.Infrastructure;
 using Nova.Common.Presentation.Endpoints;
+using Nova.Modules.Clock.Infrastructure;
 using Nova.Modules.Conversation.Infrastructure;
 using Nova.Modules.HomeAssistant.Infrastructure;
 using Nova.Modules.Reader.Infrastructure;
@@ -45,6 +46,8 @@ builder.Services.AddResearchModule(builder.Configuration);
 builder.Services.AddMemoryModule();
 
 builder.Services.AddHomeAssistantModule(builder.Configuration);
+
+builder.Services.AddClockModule();
 
 var app = builder.Build();
 
