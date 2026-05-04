@@ -17,6 +17,7 @@
       <ProjectReference Include="..\Aspire\Nova.Aspire.ServiceDefaults\Nova.Aspire.ServiceDefaults.csproj" />
       <ProjectReference Include="..\Modules\Conversation\Nova.Modules.Conversation.Infrastructure\Nova.Modules.Conversation.Infrastructure.csproj" />
       <ProjectReference Include="..\Modules\HomeAssistant\Nova.Modules.HomeAssistant.Infrastructure\Nova.Modules.HomeAssistant.Infrastructure.csproj" />
+      <ProjectReference Include="..\Modules\Memory\Nova.Modules.Memory.Infrastructure\Nova.Modules.Memory.Infrastructure.csproj" />
       <ProjectReference Include="..\Modules\Relationships\Nova.Modules.Relationships.Infrastructure\Nova.Modules.Relationships.Infrastructure.csproj" />
     </ItemGroup>
 </Project>

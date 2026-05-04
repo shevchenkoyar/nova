@@ -10,7 +10,10 @@ IResourceBuilder<ParameterResource> rabitmqPass = builder.AddParameter("nova-rab
 
 var postgres = builder
     .AddPostgres("nova-postgres", pgUser, pgPass)
-    .WithDataVolume();
+    .WithImage("pgvector/pgvector")
+    .WithImageTag("pg17-trixie")
+    .WithDataVolume("nova-postgres-data")
+    .WithPgAdmin();
 
 var coreDatabase = postgres.AddDatabase("nova-db");
 

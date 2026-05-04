@@ -3,5 +3,9 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\Common\Nova.Common.Domain\Nova.Common.Domain.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="Pgvector.EntityFrameworkCore" />
+    </ItemGroup>
 
 </Project>

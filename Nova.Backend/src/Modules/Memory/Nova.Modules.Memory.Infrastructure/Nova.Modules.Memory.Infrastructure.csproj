@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Common\Nova.Common.Infrastructure\Nova.Common.Infrastructure.csproj" />
+      <ProjectReference Include="..\Nova.Modules.Memory.Application\Nova.Modules.Memory.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    </ItemGroup>
+
+</Project>

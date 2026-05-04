@@ -1,3 +1,4 @@
+using Nova.Common.Application.Conversation;
 using Nova.Common.Application.Relationships;
 using Nova.Common.Application.Tools;
 using Nova.Contracts.Assistant;

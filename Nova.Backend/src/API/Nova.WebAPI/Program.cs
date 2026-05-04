@@ -1,5 +1,5 @@
 using System.Reflection;
-using Nava.Modules.Memory.Infrastructure;
+using Nova.Modules.Memory.Infrastructure;
 using Nova.Common.Application;
 using Nova.Common.Infrastructure;
 using Nova.Common.Presentation.Endpoints;
@@ -16,6 +16,21 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+
+const string corsPolicy = "NovaClient";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsPolicy, policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "http://127.0.0.1:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -43,13 +58,15 @@ builder.Services.AddReaderModule(builder.Configuration);
 
 builder.Services.AddResearchModule(builder.Configuration);
 
-builder.Services.AddMemoryModule();
+builder.Services.AddMemoryModule(builder.Configuration);
 
 builder.Services.AddHomeAssistantModule(builder.Configuration);
 
 builder.Services.AddClockModule();
 
 var app = builder.Build();
+
+app.UseCors(corsPolicy);
 
 app.MapDefaultEndpoints();
 
@@ -62,6 +79,6 @@ app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
-app.MapEndpoints();
+app.MapEndpoints(app.MapGroup("/api"));
 
 await app.RunAsync();

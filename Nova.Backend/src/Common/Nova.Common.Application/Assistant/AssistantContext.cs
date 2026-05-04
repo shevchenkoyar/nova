@@ -1,13 +1,15 @@
+using Nova.Common.Application.Conversation;
 using Nova.Common.Application.Relationships;
 
 namespace Nova.Common.Application.Assistant;
-
 
 public sealed class AssistantContext
 {
     public Guid UserId { get; init; }
 
     public IReadOnlyList<ContextMemoryItem> RelevantMemory { get; init; } = [];
+
+    public IReadOnlyList<AssistantConversationMessage> RecentMessages { get; init; } = [];
 
     public ResponseStyle ResponseStyle { get; init; } = ResponseStyle.Normal;
 

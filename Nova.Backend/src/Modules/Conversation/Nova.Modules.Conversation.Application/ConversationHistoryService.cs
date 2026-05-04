@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Nova.Common.Application.Assistant;
+using Nova.Common.Application.Conversation;
 using Nova.Modules.Conversation.Domain;
 
 namespace Nova.Modules.Conversation.Application;
@@ -74,5 +74,26 @@ public sealed class ConversationHistoryService(
             metadataJson);
 
         return repository.AddAsync(message, ct);
+    }
+    
+    public async Task<IReadOnlyList<AssistantConversationMessage>> GetRecentMessagesAsync(
+        Guid userId,
+        int limit,
+        CancellationToken ct)
+    {
+        var messages = await repository.GetRecentAsync(
+            userId,
+            limit,
+            ct);
+
+        return messages
+            .Where(x =>
+                x.Role == ConversationMessageRole.User ||
+                x.Role == ConversationMessageRole.Assistant)
+            .Select(x => new AssistantConversationMessage(
+                Role: x.Role == ConversationMessageRole.User ? "user" : "assistant",
+                Content: x.Content,
+                CreatedAt: x.CreatedAt))
+            .ToArray();
     }
 }

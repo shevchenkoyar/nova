@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nova.Common.Application.Assistant;
+using Nova.Common.Application.Conversation;
 using Nova.Common.Presentation.Endpoints;
 using Nova.Modules.Conversation.Application;
 using Nova.Modules.Conversation.Infrastructure.Database;
