@@ -15,7 +15,7 @@ public static class ApplicationConfiguration
     extension(IServiceCollection services)
     {
         public IServiceCollection AddApplication(Assembly[] moduleAssemblies, IConfigurationManager configuration)
-        {
+        {   
             // Temporary: register common services here. In the future, we can split it into multiple modules if needed.
             services.AddScoped<ContextBuilder>();
             services.AddScoped<AssistantService>();

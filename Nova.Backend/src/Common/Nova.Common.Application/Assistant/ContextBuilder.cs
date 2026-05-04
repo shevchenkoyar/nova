@@ -1,11 +1,12 @@
-using Nava.Modules.Memory.Contracts;
-using Nova.Modules.Relationships.Contracts;
+using Nova.Common.Application.Memory;
+using Nova.Common.Application.Relationships;
 
 namespace Nova.Common.Application.Assistant;
 
+
 public sealed class ContextBuilder(
-    IMemoryModuleApi memory,
-    IRelationshipsModuleApi relationships)
+    IAssistantMemory memory,
+    IRelationshipContextProvider relationships)
 {
     public async Task<AssistantContext> BuildAsync(
         Guid userId,
@@ -13,10 +14,9 @@ public sealed class ContextBuilder(
         CancellationToken ct)
     {
         var memoryItems = await memory.SearchAsync(
-            new SearchMemoryRequest(
-                UserId: userId,
-                Query: "user communication preferences response style " + text,
-                Limit: 10),
+            userId,
+            "user communication preferences response style " + text,
+            limit: 10,
             ct);
 
         var relevantMemory = memoryItems
@@ -29,17 +29,13 @@ public sealed class ContextBuilder(
             x.Content.Contains("корот", StringComparison.OrdinalIgnoreCase) ||
             x.Content.Contains("short", StringComparison.OrdinalIgnoreCase));
 
-        var relationship = await relationships.GetOrCreateAsync(
-            userId,
-            ct);
+        var relationship = await relationships.GetOrCreateAsync(userId, ct);
 
         return new AssistantContext
         {
             UserId = userId,
             RelevantMemory = relevantMemory,
-            ResponseStyle = prefersShort
-                ? ResponseStyle.Short
-                : ResponseStyle.Normal,
+            ResponseStyle = prefersShort ? ResponseStyle.Short : ResponseStyle.Normal,
             Relationship = relationship,
             AccessLevel = relationship.AccessLevel
         };

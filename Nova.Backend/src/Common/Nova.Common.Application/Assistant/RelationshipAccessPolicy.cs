@@ -1,43 +1,49 @@
+using Nova.Common.Application.Relationships;
 using Nova.Common.Application.Tools;
-using Nova.Modules.Relationships.Contracts;
 
 namespace Nova.Common.Application.Assistant;
 
+
 public static class RelationshipAccessPolicy
 {
-    public static bool CanAnswer(AssistantContext context)
-    {
-        return context.AccessLevel != RelationshipAccessLevel.Blocked;
-    }
-
     public static bool CanExecuteTool(
         AssistantContext context,
         ToolSafetyLevel safetyLevel)
     {
         return context.AccessLevel switch
         {
-            RelationshipAccessLevel.Full => true,
-            RelationshipAccessLevel.Limited =>
+            AssistantAccessLevel.Full => true,
+
+            AssistantAccessLevel.Limited =>
                 safetyLevel is ToolSafetyLevel.ReadOnly or ToolSafetyLevel.SafeAction,
-            RelationshipAccessLevel.BasicOnly =>
+
+            AssistantAccessLevel.BasicOnly =>
                 safetyLevel is ToolSafetyLevel.ReadOnly,
-            RelationshipAccessLevel.ReadOnly =>
+
+            AssistantAccessLevel.ReadOnly =>
                 safetyLevel is ToolSafetyLevel.ReadOnly,
+
+            AssistantAccessLevel.Blocked => false,
+
             _ => false
         };
     }
 
-    public static string BuildBlockedMessage(AssistantContext context)
+    public static string BuildBlockedMessage(
+        AssistantContext context)
     {
         return context.AccessLevel switch
         {
-            RelationshipAccessLevel.Blocked =>
+            AssistantAccessLevel.Blocked =>
                 "Я сейчас не буду помогать этому профилю. Причина — слишком низкий уровень уважительного взаимодействия.",
-            RelationshipAccessLevel.ReadOnly =>
+
+            AssistantAccessLevel.ReadOnly =>
                 "Я могу только отвечать на безопасные вопросы, но не буду выполнять действия.",
-            RelationshipAccessLevel.BasicOnly =>
+
+            AssistantAccessLevel.BasicOnly =>
                 "Я помогу только с базовыми безопасными запросами.",
-            _ => 
+
+            _ =>
                 "Я не могу выполнить это действие."
         };
     }

@@ -2,8 +2,6 @@
     
     <ItemGroup>
       <ProjectReference Include="..\..\..\..\Nova.Shared\Nova.Contracts\Nova.Contracts.csproj" />
-      <ProjectReference Include="..\..\Modules\Memory\Nava.Modules.Memory.Contracts\Nava.Modules.Memory.Contracts.csproj" />
-      <ProjectReference Include="..\..\Modules\Relationships\Nova.Modules.Relationships.Contracts\Nova.Modules.Relationships.Contracts.csproj" />
       <ProjectReference Include="..\Nova.Common.Domain\Nova.Common.Domain.csproj" />
     </ItemGroup>
     

@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Nova.Common.Application.Relationships;
 using Nova.Common.Application.Tools;
 using Nova.Modules.Relationships.Application;
+using Nova.Modules.Relationships.Application.Adapters;
 using Nova.Modules.Relationships.Application.Tools;
 using Nova.Modules.Relationships.Contracts;
 using Nova.Modules.Relationships.Infrastructure.Database;
@@ -17,6 +19,7 @@ public static class RelationshipsModule
         public IServiceCollection AddRelationshipsModule(IConfiguration configuration)
         {
             services.AddScoped<IRelationshipsModuleApi, RelationshipsModuleApi>();
+            services.AddScoped<IRelationshipContextProvider, RelationshipContextProvider>();
             
             services.AddScoped<INovaTool, GetRelationshipStatusTool>();
             

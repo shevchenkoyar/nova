@@ -5,7 +5,8 @@ using Nova.Modules.Conversation.Domain;
 namespace Nova.Modules.Conversation.Application;
 
 public sealed class ConversationHistoryService(
-    IConversationMessageRepository repository) : IConversationHistory
+    IConversationMessageRepository repository)
+    : IConversationHistory
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {

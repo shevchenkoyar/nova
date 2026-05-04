@@ -1,10 +1,11 @@
-using Nova.Modules.Relationships.Contracts;
+using Nova.Common.Application.Relationships;
 
 namespace Nova.Common.Application.Assistant;
 
+
 public interface IRelationshipEvaluator
 {
-    Task<AdjustRelationshipRequest> EvaluateAsync(
+    Task<RelationshipAdjustment> EvaluateAsync(
         Guid userId,
         string userMessage,
         AssistantContext? context,

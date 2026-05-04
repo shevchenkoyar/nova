@@ -33,7 +33,7 @@ var coreWebApi = builder.AddProject<Projects.Nova_WebAPI>("nova-webapi")
     .WaitFor(rabbitMq)
     .WaitForCompletion(migrator);
 
-builder.AddScalarApiReference("nova-scalar", options =>
+builder.AddScalarApiReference("nova-scalar", 50216 ,options =>
 {
     options.WithTheme(ScalarTheme.Kepler); 
     options.EnableDarkMode(); 

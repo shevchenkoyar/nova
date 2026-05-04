@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Nova.Modules.Relationships.Contracts;
+using Nova.Common.Application.Relationships;
 using OpenAI.Chat;
 
 namespace Nova.Common.Application.Assistant;
@@ -13,17 +13,15 @@ public sealed class OpenAiRelationshipEvaluator(
         PropertyNameCaseInsensitive = true
     };
 
-    public async Task<AdjustRelationshipRequest> EvaluateAsync(
+    public async Task<RelationshipAdjustment> EvaluateAsync(
         Guid userId,
         string userMessage,
         AssistantContext? context,
         CancellationToken ct)
     {
-        var systemPrompt = BuildSystemPrompt(context);
-
         var response = await client.CompleteChatAsync(
             [
-                new SystemChatMessage(systemPrompt),
+                new SystemChatMessage(BuildSystemPrompt(context)),
                 new UserChatMessage(userMessage)
             ],
             cancellationToken: ct);
@@ -32,8 +30,7 @@ public sealed class OpenAiRelationshipEvaluator(
 
         var delta = ParseDelta(content);
 
-        return new AdjustRelationshipRequest(
-            PersonId: userId,
+        return new RelationshipAdjustment(
             TrustDelta: Clamp(delta.TrustDelta),
             WarmthDelta: Clamp(delta.WarmthDelta),
             RespectDelta: Clamp(delta.RespectDelta),
@@ -77,14 +74,6 @@ Return ONLY valid JSON:
   "reason": "short reason"
 }
 
-Parameters:
-- trustDelta: affects trust in the user.
-- warmthDelta: affects emotional warmth.
-- respectDelta: affects perceived respect.
-- familiarityDelta: increases with normal interaction.
-- annoyanceDelta: increases when the user is demanding/rude; decreases after polite/apology.
-- offenseDelta: increases on insults, aggression, boundary violations; decreases after sincere apology.
-
 Rules:
 - Normal neutral technical messages: familiarityDelta = 1, other deltas = 0.
 - Polite messages: warmthDelta +1, respectDelta +1, familiarityDelta +1.
@@ -95,9 +84,7 @@ Rules:
 - Dangerous/manipulative/boundary violating request: trustDelta -4, respectDelta -3, offenseDelta +4.
 - Do not punish directness in technical questions.
 - Do not overreact.
-- Keep normal deltas between -3 and +3.
-- Use larger deltas only for clearly harmful, insulting, aggressive, or apologetic messages.
-- Return JSON only. No markdown. No explanation.
+- Return JSON only. No markdown.
 """;
     }
 
@@ -111,31 +98,22 @@ Rules:
             var end = content.LastIndexOf('}');
 
             if (start < 0 || end < 0 || end <= start)
-            {
-                return RelationshipDeltaDto.Neutral(
-                    "Failed to parse relationship evaluation JSON.");
-            }
+                return RelationshipDeltaDto.Neutral("Failed to parse relationship evaluation JSON.");
 
             var json = content[start..(end + 1)];
 
-            var dto = JsonSerializer.Deserialize<RelationshipDeltaDto>(
-                json,
-                JsonOptions);
-
-            return dto ?? RelationshipDeltaDto.Neutral(
-                "Empty relationship evaluation result.");
+            return JsonSerializer.Deserialize<RelationshipDeltaDto>(
+                       json,
+                       JsonOptions)
+                   ?? RelationshipDeltaDto.Neutral("Empty relationship evaluation result.");
         }
         catch
         {
-            return RelationshipDeltaDto.Neutral(
-                "Relationship evaluation failed.");
+            return RelationshipDeltaDto.Neutral("Relationship evaluation failed.");
         }
     }
 
-    private static int Clamp(int value)
-    {
-        return Math.Clamp(value, -10, 10);
-    }
+    private static int Clamp(int value) => Math.Clamp(value, -10, 10);
 
     private sealed record RelationshipDeltaDto(
         int TrustDelta,

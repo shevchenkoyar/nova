@@ -1,6 +1,6 @@
+using Nova.Common.Application.Relationships;
 using Nova.Common.Application.Tools;
 using Nova.Contracts.Assistant;
-using Nova.Modules.Relationships.Contracts;
 
 namespace Nova.Common.Application.Assistant;
 
@@ -12,7 +12,7 @@ public sealed class AssistantService(
     IAssistantResponseGenerator responseGenerator,
     IConversationHistory history,
     IRelationshipEvaluator relationshipEvaluator,
-    IRelationshipsModuleApi relationships)
+    IRelationshipContextProvider relationships)
 {
     public async Task<AssistantMessageResponse> HandleAsync(
         AssistantMessageRequest request,
@@ -34,7 +34,8 @@ public sealed class AssistantService(
             initialContext,
             ct);
 
-        await relationships.AdjustAsync(
+        var updatedRelationship = await relationships.AdjustAsync(
+            request.UserId,
             relationshipDelta,
             ct);
 
@@ -43,7 +44,7 @@ public sealed class AssistantService(
             request.Text,
             ct);
 
-        if (context.AccessLevel == RelationshipAccessLevel.Blocked &&
+        if (context.AccessLevel == AssistantAccessLevel.Blocked &&
             !IsRecoveryRequest(request.Text))
         {
             var blockedMessage = RelationshipAccessPolicy.BuildBlockedMessage(context);
@@ -53,8 +54,8 @@ public sealed class AssistantService(
                 Data: new
                 {
                     RelationshipDelta = relationshipDelta,
-                    context.AccessLevel,
-                    context.Relationship
+                    Relationship = updatedRelationship,
+                    context.AccessLevel
                 });
 
             await history.AddAssistantMessageAsync(
